@@ -66,6 +66,20 @@ El resultado muestra que solo 2391 tweets contienen al menos una de estas palabr
 
 Esta variable se interpreta con cautela: `has_disinfo_kw` no indica que un tweet sea desinformativo, solo que contiene vocabulario relacionado con desinformación. Un tweet puede estar difundiendo desinformación, pero también puede estar criticándola o mencionándola.
 
+
+### 3.4 Hipótesis de partida sobre desinformación y polarización
+
+A partir del análisis exploratorio, se plantean las siguientes hipótesis de trabajo:
+
+| Hipótesis | Planteamiento | Cómo se contrasta en el proyecto |
+|---|---|---|
+| H1 | El texto de los tweets contiene señal lingüística útil para distinguir entre `left` y `right`. | Se entrenan y comparan modelos supervisados con TF-IDF, Word2Vec, embeddings BERT y fine-tuning de Transformer. |
+| H2 | El vocabulario asociado a desinformación puede estar relacionado con la polarización ideológica. | Se crea la variable exploratoria `has_disinfo_kw` a partir de palabras como `bulo`, `fake news`, `mentira`, `fraude`, `manipulación` o `desinformación`, y se compara su presencia entre clases. |
+| H3 | Las representaciones contextuales pueden capturar patrones discursivos relacionados con la ideología mejor que las representaciones más simples. | Se compara el rendimiento de TF-IDF, Word2Vec, BERT congelado y Transformer ajustado mediante fine-tuning. |
+| H4 | Los embeddings BERT pueden contener agrupamientos discursivos asociados parcialmente a la ideología. | En la extensión se aplica clustering sobre embeddings BERT y se analiza la relación entre cluster e ideología con chi-square, Cramer's V y visualizaciones. |
+
+Estas hipótesis no se plantean como afirmaciones ya demostradas, sino como preguntas de análisis que se revisan con los resultados de los modelos y de la extensión. Además, la desinformación no se mide como veracidad o falsedad del contenido, porque el dataset no incluye una etiqueta específica para ello. Por tanto, `has_disinfo_kw` se interpreta solo como una señal léxica exploratoria.
+
 ## 4. Metodología
 
 ### 4.1 Validación y prevención de fuga de información
@@ -173,6 +187,20 @@ La matriz de confusión muestra que el Transformer fine-tuned acierta bastantes 
 
 El modelo sigue funcionando mejor para `left`, pero mejora claramente la detección de `right` respecto a modelos anteriores.
 
+
+### 6.5 Interpretación respecto a las hipótesis de partida
+
+Los resultados permiten revisar las hipótesis iniciales de forma más concreta:
+
+| Hipótesis | Resultado observado | Interpretación |
+|---|---|---|
+| H1: el texto contiene señal útil para predecir ideología. | Todos los modelos superan un comportamiento aleatorio y el mejor modelo alcanza `F1-macro = 0.6649`. | La hipótesis queda apoyada: el texto contiene información útil para distinguir entre `left` y `right`, aunque la tarea no es sencilla. |
+| H2: el vocabulario asociado a desinformación puede relacionarse con polarización. | Solo 2391 tweets, un 1.33% del entrenamiento, contienen palabras clave de desinformación, y su presencia es parecida entre `left` y `right`. | Con esta aproximación no se observa una relación fuerte entre ideología y vocabulario asociado a desinformación. Además, la variable no identifica veracidad, solo presencia de términos. |
+| H3: las representaciones contextuales pueden mejorar a métodos simples. | El Transformer fine-tuned obtiene el mejor resultado, pero BERT congelado no supera a TF-IDF. | La hipótesis se cumple solo cuando el Transformer se ajusta a la tarea. Usar embeddings BERT congelados no garantiza una mejora. |
+| H4: los embeddings BERT pueden contener agrupamientos discursivos relacionados con ideología. | KMeans obtiene `k = 3`, pero con `silhouette ≈ 0.060` y `Cramer's V = 0.0585`. | Se detectan agrupamientos aproximados y una asociación estadística con ideología, pero la relación es débil y los clusters no separan claramente las clases. |
+
+En conjunto, los resultados apoyan la idea de que existe señal lingüística para clasificar ideología política, especialmente cuando se ajusta un Transformer completo. Sin embargo, no se puede afirmar que exista una relación fuerte entre desinformación y polarización a partir de la variable léxica usada. Para estudiar desinformación de forma más sólida harían falta etiquetas explícitas de veracidad o una anotación específica del tipo de contenido desinformativo.
+
 ## 7. Extensión: clustering sobre embeddings BERT
 
 La extensión de la convocatoria extraordinaria consiste en aplicar clustering no supervisado sobre los embeddings BERT `[CLS]`.
@@ -265,7 +293,7 @@ Las principales diferencias son:
 
 En resumen, la nueva versión intenta responder directamente a los comentarios recibidos: se valida la selección de hiperparámetros, se documenta mejor el proceso, se comentan las celdas de código, se añaden gráficos y se incorpora una extensión real y diferenciada.
 
-## 10. Reproducibilidad
+## 9. Reproducibilidad
 
 Para reproducir el proyecto:
 
@@ -281,11 +309,11 @@ Para reproducir el proyecto:
    - `transformers`
    - `tqdm`
    - `joblib`
-4. Ejecutar el notebook `Proyecto_TD_Junio.ipynb`.
+4. Ejecutar el notebook `Proyecto_TD_v6.ipynb`.
 
 El notebook utiliza caché para evitar repetir procesos costosos. Si los modelos o embeddings ya existen en disco, se cargan directamente. Si se desea repetir una búsqueda de hiperparámetros, se pueden activar las variables `FORCE_RETRAIN_*` correspondientes.
 
-## 11. Conclusiones
+## 10. Conclusiones
 
 El proyecto muestra que el texto de los tweets contiene información útil para predecir la ideología binaria, aunque el problema no es trivial.
 
