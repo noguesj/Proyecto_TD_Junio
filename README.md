@@ -309,7 +309,7 @@ Para reproducir el proyecto:
    - `transformers`
    - `tqdm`
    - `joblib`
-4. Ejecutar el notebook `Proyecto_TD_v6.ipynb`.
+4. Ejecutar el notebook `Proyecto_TD_Junio.ipynb`.
 
 El notebook utiliza caché para evitar repetir procesos costosos. Si los modelos o embeddings ya existen en disco, se cargan directamente. Si se desea repetir una búsqueda de hiperparámetros, se pueden activar las variables `FORCE_RETRAIN_*` correspondientes.
 
