@@ -325,7 +325,7 @@ Respecto a la desinformación, la búsqueda por palabras clave muestra que el vo
 
 La extensión con clustering aporta una visión exploratoria adicional. Los clusters muestran algunos patrones discursivos, pero la separación es débil y todos contienen tweets de ambas ideologías. Por tanto, los clusters se interpretan como agrupamientos aproximados, no como categorías ideológicas perfectas.
 
-## 12. Referencias
+## 11. Referencias
 
 - García-Díaz, J. A., et al. (2023). *Overview of PoliticES at IberLEF 2023: Political Ideology and Misinformation in Spanish*.
 - Cañete, J., et al. (2020). *Spanish Pre-trained BERT Model and Evaluation Data*.
